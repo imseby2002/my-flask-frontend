@@ -1,1 +1,46 @@
-"Hello World" 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>問答 API</title>
+</head>
+<body>
+    <h1>問答機器人</h1>
+    <form id="questionForm">
+        <label for="question">請輸入你的問題:</label>
+        <input type="text" id="question" name="question" required>
+        <button type="submit">提交問題</button>
+    </form>
+
+    <h2>回答:</h2>
+    <p id="answer"></p>
+
+    <script>
+        // 監聽表單提交
+        document.getElementById('questionForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // 獲取用戶輸入的問題
+            const userQuestion = document.getElementById('question').value;
+
+            // 發送 POST 請求到 Flask API
+            const response = await fetch('https://my-flask-api-production.up.railway.app/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: userQuestion }),
+            });
+
+            // 解析回應並顯示答案
+            const data = await response.json();
+            if (data.answer) {
+                document.getElementById('answer').innerText = data.answer;
+            } else {
+                document.getElementById('answer').innerText = "抱歉，無法回答您的問題。";
+            }
+        });
+    </script>
+</body>
+</html>
